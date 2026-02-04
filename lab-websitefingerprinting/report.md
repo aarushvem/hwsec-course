@@ -19,14 +19,14 @@
 
 | Number of Cache Lines | Median Access Latency (ms) |
 | --------------------- | -------------------------- |
-| 1                     |                            |
-| 10                    |                            |
-| 100                   |                            |
-| 1,000                 |                            |
-| 10,000                |                            |
-| 100,000               |                            |
-| 1,000,000             |                            |
-| 10,000,000            |                            |
+| 1                     |           0                 |
+| 10                    |           0                 |
+| 100                   |           0                 |
+| 1,000                 |           0                 |
+| 10,000                |   0.10000002384185791       |
+| 100,000               |   0.20000004768371582       |
+| 1,000,000             |   1.1999999284744263        |
+| 10,000,000            |           N/A               |
 
 
 
@@ -35,7 +35,7 @@
 
 **According to your measurement results, what is the resolution of your `performance.now()`? In order to measure differences in time with `performance.now()``, approximately how many cache accesses need to be performed?**
 
-
+The resolution of performance.now() is about .1 ms since that is the first measurable value. We needed atleast 10,000 cache accesses to reach this threshold. In order to limit the effect of noise, it would probably be more helpful to use 100,000 cache accesses.
 
 
 ## 2-2
