@@ -47,7 +47,7 @@ function measureNLines() {
 
     console.log("Hello from warmup.js"+result);
 
-  return result;
+  return result; 
 }
 
 document.getElementById(
