@@ -58,6 +58,19 @@ The resolution of performance.now() is about .1 ms since that is the first measu
 
 **Use the Python code we provided in Part 2.1 to analyze simple statistics (mean, median, etc.) on the traces from google.com and nytimes.com. Report the statistic numbers.**
 
+### Google.com Trace Statistics
+- **Mean:** 24.95
+- **Median:** 30.43
+- **Standard Deviation:** 7.69
+- **Minimum:** 14.26
+- **Maximum:** 30.87
+
+### NYTimes.com Trace Statistics
+- **Mean:** 29.64
+- **Median:** 29.68
+- **Standard Deviation:** 0.10
+- **Minimum:** 29.37
+- **Maximum:** 29.75
 
 
 
@@ -66,6 +79,16 @@ The resolution of performance.now() is about .1 ms since that is the first measu
 **Include your classification results in your report.**
 
 ```
+                           precision    recall  f1-score   support
+
+   https://www.google.com       0.73      0.80      0.76        40
+  https://www.nytimes.com       1.00      1.00      1.00        40
+https://www.wikipedia.org       0.60      0.68      0.64        40
+  https://www.youtube.com       0.84      0.65      0.73        40
+
+                 accuracy                           0.78       160
+                macro avg       0.79      0.78      0.78       160
+             weighted avg       0.79      0.78      0.78       160
 
 ```
 
