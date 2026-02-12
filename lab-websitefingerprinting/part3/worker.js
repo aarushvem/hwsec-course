@@ -1,9 +1,9 @@
 // Number of sweep counts
 // TODO (Exercise 3-1): Choose an appropriate value!
-let P = 1000;
+let P = 5;
 
 // Number of elements in your trace
-let K = 5 * 1000 / P; 
+let K = Math.floor(5000 / P); 
 
 // Array of length K with your trace's values
 let T;
@@ -22,6 +22,16 @@ function record() {
   start = performance.now();
 
   // TODO (Exercise 3-1): Record data for 5 seconds and save values to T.
+
+  for (let i = 0; i < K; i++) {
+    const windowEnd = performance.now() + P;
+    let count = 0;
+
+    while (performance.now() < windowEnd) {
+      count++
+    }
+    T[i] = count;
+  }
 
   // Once done recording, send result to main thread
   postMessage(JSON.stringify(T));
