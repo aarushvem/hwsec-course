@@ -125,4 +125,4 @@ https://www.wikipedia.org       0.38      0.34      0.36        80
 
 **Compare your accuracy numbers between Part 2 and 3. Does the accuracy decrease in Part 3? Do you think that our “cache-occupancy” attack actually exploits a cache side channel? If not, take a guess as to possible root causes of the modified attack.**
 
-For all 4 website, the accuracy decreased from part 2 to part 3. In part 2 all of the websites were above 0.6 in accuracy, whereas for part 3 all of the websites accuracies are in the 0.3 to 0.55 range. For part 3, the accuracy is barely above random guessing (0.25). This is a big decrease in accuracy, which suggests that our cache-occupancy attack does actually exploit a cache side channel.
+For all 4 websites, the accuracy decreased from part 2 to part 3. In part 2, all of the websites were above 0.6 in accuracy, whereas for part 3, all of the websites' accuracies are in the 0.3 to 0.55 range. For part 3, the accuracy is barely above random guessing (0.25). This is a big decrease in accuracy, which suggests that our cache-occupancy attack does actually exploit a cache side channel.
