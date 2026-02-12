@@ -100,7 +100,16 @@ https://www.wikipedia.org       0.60      0.68      0.64        40
 **Include your new accuracy results for the modified attack code in your report.**
 
 ```
+                           precision    recall  f1-score   support
 
+   https://www.google.com       0.51      0.55      0.53        80
+  https://www.nytimes.com       0.32      0.30      0.31        80
+https://www.wikipedia.org       0.38      0.34      0.36        80
+  https://www.youtube.com       0.31      0.34      0.32        80
+
+                 accuracy                           0.38       320
+                macro avg       0.38      0.38      0.38       320
+             weighted avg       0.38      0.38      0.38       320
 ```
 
 
@@ -110,3 +119,4 @@ https://www.wikipedia.org       0.60      0.68      0.64        40
 
 **Compare your accuracy numbers between Part 2 and 3. Does the accuracy decrease in Part 3? Do you think that our “cache-occupancy” attack actually exploits a cache side channel? If not, take a guess as to possible root causes of the modified attack.**
 
+For all 4 website, the accuracy decreased from part 2 to part 3. In part 2 all of the websites were above 0.6 in accuracy, whereas for part 3 all of the websites accuracies are in the 0.3 to 0.55 range. For part 3, the accuracy is barely above random guessing (0.25). This is a big decrease in accuracy, which suggests that our cache-occupancy attack does actually exploit a cache side channel.
