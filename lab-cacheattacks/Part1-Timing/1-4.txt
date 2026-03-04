@@ -1,1 +1,5 @@
+L2 cache lines needed to fill cache:
+1048576 / 64 = 16384 cache lines
 
+L3 cache lines needed to fill cache:
+11534336 / 64 = 180224 cache lines
