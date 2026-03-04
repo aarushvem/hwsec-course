@@ -1,1 +1,3 @@
-
+L1 (D-cache): LineSize=64 B, TotalSize=32768 B, Ways=8, Sets=64, RawLatency=TODO(WikiChip)
+L2:          LineSize=64 B, TotalSize=1048576 B, Ways=16, Sets=1024, RawLatency=TODO(WikiChip)
+L3:          LineSize=64 B, TotalSize=11534336 B, Ways=11, Sets=16384, RawLatency=TODO(WikiChip)
