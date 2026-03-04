@@ -1,5 +1,5 @@
 | Cache | Cache Line Size | Total Size | Number of Ways (Associativity) | Number of Sets | Raw Latency |
 |------|----------------|-----------|---------------------------------|---------------|-------------|
-| L1   | 64 Bytes       | 32768 B   | 8                               | 64            | TBD |
-| L2   | 64 Bytes       | 1048576 B | 16                              | 1024          | TBD |
-| L3   | 64 Bytes       | 11534336 B| 11                              | 16384         | TBD |
+| L1   | 64 Bytes       | 32768 B   | 8                               | 64            | 4 cycles |
+| L2   | 64 Bytes       | 1048576 B | 16                              | 1024          | 12 cycles |
+| L3   | 64 Bytes       | 11534336 B| 11                              | 16384         | 42 cycles |
