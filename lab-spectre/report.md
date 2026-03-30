@@ -1,8 +1,7 @@
 ## 1-1
 
 **Given the attack plan above, how many addresses need to be flushed in the first step?**
-
-
+256 addresses need to be flushed in the first step, since the leaked value is one byte and can take 256 possible values (0–255). Each value maps to a different page in the shared memory region, so the attacker must flush all 256 pages to ensure a clean Flush+Reload signal and accurately determine which page was accessed.
 
 ## 2-1
 
