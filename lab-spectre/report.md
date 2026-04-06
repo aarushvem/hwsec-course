@@ -26,10 +26,10 @@ The minimum number of times to train the branch in order to consistently get acc
 
 **Describe the strategy you employed to extend the speculation window of the target branch in the victim.**
 
-
+To extend the speculation window, we evict the part3_limit variable from cache by reading through a large 8MB buffer immediately before the malicious kernel call. Since the branch condition offset < part3_limit now has to fetch part3_limit from DRAM instead of cache, it takes much longer to resolve. This gives the CPU more cycles of speculative execution before it detects the misprediction and rolls back, which is enough time for the secret-dependent load to complete and leave a detectable trace in the cache.
 
 ## 3-3
 
 **Assume you are an attacker looking to exploit a new machine that has the same kernel module installed as the one we attacked in this part. What information would you need to know about this new machine to port your attack? Could it be possible to determine this infomration experimentally? Briefly describe in 5 sentences or less.**
 
-
+To port the attack to a new machine, you would need to know the cache hit latency threshold to distinguish cached vs uncached memory accesses. You would also need to know the LLC size to choose an appropriately sized thrash buffer that reliably evicts part3_limit. Both of these can be determined experimentally — the threshold by timing repeated accesses to flushed vs cached memory, and the LLC size by progressively increasing the thrash buffer size until eviction reliably occurs. The page size and number of probe pages are architectural constants that are publicly known for x86. The branch predictor behavior may also differ across microarchitectures, requiring tuning of the number of training rounds.
