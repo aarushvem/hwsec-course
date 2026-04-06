@@ -12,9 +12,14 @@
 
 **For the same address, assume an arbitrary XOR function for computing the Bank id, list all possible attacker addresses whose Row id is one more than 0x752C3000's Row id and all the other ids match, including the Bank id and Column id. Hint: there should be 16 such addresses total.**
 
+The attacker row must have Row id = 0x3A97 (one more than victim), the same Column id = 0x1000, and the same Bank id. Since the XOR bank function is unknown, we enumerate all 16 combinations of bits 13–16, which are the free bank bits between the fixed column and row fields. The base address is (0x3A97 << 17) | 0x1000 = 0x752E1000, and the 16 candidates are:
+0x752E1000, 0x752E3000, 0x752E5000, 0x752E7000, 0x752E9000, 0x752EB000, 0x752ED000, 0x752EF000, 0x754E1000, 0x754E3000, 0x754E5000, 0x754E7000, 0x754E9000, 0x754EB000, 0x754ED000, 0x754EF000
+
 ## 2-3
 
 **Analyze the statistics produced by your code when running part2, and report a threshold to distinguish the bank conflict.**
+
+After running part 2, the threshold to distinguish bank conflicts is around 380.
 
 ## 3-2
 

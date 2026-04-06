@@ -180,8 +180,24 @@ char* get_rand_addr(size_t buf_size)
  *
  */
 uint64_t measure_bank_latency(volatile char *addr_A, volatile char *addr_B) {
-    // TODO: Exercise 2-2
-    return 0; 
+    uint64_t t_start, t_end;
+
+    _mm_clflush((void*)addr_A);
+    _mm_clflush((void*)addr_B);
+    _mm_mfence();
+
+    uint32_t lo, hi;
+    __asm__ volatile("rdtsc" : "=a"(lo), "=d"(hi));
+    t_start = ((uint64_t)hi << 32) | lo;
+
+    *addr_A;
+    *addr_B;
+    _mm_mfence();
+
+    __asm__ volatile("rdtsc" : "=a"(lo), "=d"(hi));
+    t_end = ((uint64_t)hi << 32) | lo;
+
+    return t_end - t_start;
 }
 
 /*
