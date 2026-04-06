@@ -7,19 +7,20 @@
 
 **Copy your code in `run_attacker` from `attacker-part1.c` to `attacker-part2.c`. Does your Flush+Reload attack from Part 1 still work? Why or why not?**
 
-
+No it does not work since Part 2 added a bounds check which prevents anything other than the first 4 bytes to be loaded in non-speculatively. Any offset greater than 4 does not bring a page into cache, so Flush+Reload sees only misses
 
 ## 2-3
 
 **In our example, the attacker tries to leak the values in the array `secret_part2`. In a real-world attack, attackers can use Spectre to leak data located in an arbitrary address in the victim's space. Explain how an attacker can achieve such leakage.**
 
+In a real attack, the attacker can leak arbitrary memory by passing an offset that can be added to the base address of the array which is being attacked. This offset can point to any target address in the victim's space. Specifically, if the victim code does array[offset], the attacker computes offset = target_address - base_address_of_array. Since spectre is during speculative execution it can bypass the restrictions typically enforced by the OS.
 
 
 ## 2-4
 
 **Experiment with how often you train the branch predictor. What is the minimum number of times you need to train the branch (i.e. `if offset < part2_limit`) to make the attack work?**
 
-
+The minimum number of times to train the branch in order to consistently get accurate results was two. However, in order to ensure accuracy while keeping efficiency, we set the training rounds to 6 which consistently passes while also being quick.
 
 ## 3-2
 
