@@ -2,9 +2,15 @@
 
 **In a 64-bit system using 4KB pages, which bits are used to represent the page offset, and which are used to represent the page number?**
 
+In a 64-bit system using 4KB pages, bits 0-11 represent the page offset and bits 12-63 represent the page number.
+
 **How about for a 64-bit system using 2MB pages? Which bits are used for page number and which are for page offset?**
 
+In a 64-bit system using 2MB pages, bits 0-20 represent the page offset and bits 21-63 represent the page number.
+
 **In a 2GB buffer, how many 2MB hugepages are there?**
+
+In a 2GB buffer, there are 1024 2MB hugepages.
 
 ## 2-1
 
