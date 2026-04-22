@@ -11,7 +11,7 @@
 #define BANKS 16
 #define CONSISTENCY_RATE 0.95
 // TODO: Threshold derived in part2
-#define THRESHOLD 1000 
+#define THRESHOLD 380
 #define POOL_SIZE 1000
 #define ROUNDS  100
 
@@ -52,8 +52,55 @@ uint64_t median(uint64_t* vals, size_t size) {
  */
 
 std::array<std::vector<uint64_t>, BANKS> bin_rows(uint64_t starting_addr, uint64_t final_addr) {
-    // TODO - Exercise 3-1
     std::array<std::vector<uint64_t>, BANKS> bins;
+
+    // Stride by ROW_SIZE to sample one address per row
+    uint64_t range = final_addr - starting_addr;
+    uint64_t stride = (range / POOL_SIZE / ROW_SIZE) * ROW_SIZE;
+    if (stride == 0) stride = ROW_SIZE;
+
+    // Collect candidate virtual addresses
+    std::vector<uint64_t> candidates;
+    for (uint64_t virt = starting_addr; 
+         virt < final_addr && candidates.size() < POOL_SIZE; 
+         virt += stride) {
+        candidates.push_back(virt);
+    }
+
+    // Bin each candidate by bank conflict
+    for (uint64_t virt : candidates) {
+        uint64_t phys = virt_to_phys(virt);
+        bool placed = false;
+
+        for (size_t i = 0; i < BANKS; i++) {
+            if (bins[i].empty()) continue;
+
+            // Compare against bin representative using median over ROUNDS
+            uint64_t rep_virt = phys_to_virt(bins[i][0]);
+            uint64_t latencies[ROUNDS];
+            for (int r = 0; r < ROUNDS; r++) {
+                latencies[r] = measure_bank_latency((volatile char*)virt, (volatile char*)rep_virt);
+            }
+            uint64_t lat = median(latencies, ROUNDS);
+
+            if (lat > THRESHOLD) {
+                bins[i].push_back(phys);
+                placed = true;
+                break;
+            }
+        }
+
+        // No conflict found — start a new bin
+        if (!placed) {
+            for (size_t i = 0; i < BANKS; i++) {
+                if (bins[i].empty()) {
+                    bins[i].push_back(phys);
+                    break;
+                }
+            }
+        }
+    }
+
     return bins;
 }
 
