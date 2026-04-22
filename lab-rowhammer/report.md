@@ -31,6 +31,8 @@ After running part 2, the threshold to distinguish bank conflicts is around 380.
 
 **Based on the XOR function you reverse-engineered, determine which of the 16 candidate addresses you derived in Discussion Question 2-1 maps to the same bank.**
 
+Using the reverse-engineered XOR function F0 {A14^A17, A15^A18, A16^A19, A7^A8^A9^A12^A13^A15^A16}, we computed the bank ID of the victim address 0x96ec3000 and all 16 candidate attacker addresses. The attacker address 0x96EE7000 produces the same bank ID (6) as the victim, making it the address among the 16 candidates that maps to the same bank and can be used as an aggressor row in a double-sided Rowhammer attack.
+
 ## 4-2
 
 **Try different data pattern and include the bitflip observation statistics in the table below. Then answer the following questions:**
