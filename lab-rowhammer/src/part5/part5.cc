@@ -18,7 +18,28 @@ uint32_t genParity(uint32_t data) {
     uint32_t parity = 0;
 
     // TODO: Exercise 5-2, Generate the parity bits for the data
-    
+    // Compute P0-P4 using parity_eqs lookup table.
+    // parity_eqs[p][d] == 1 means data bit d is included in parity bit p.
+    for (int p = 0; p < 5; p++) {
+        uint32_t bit = 0;
+        for (int d = 0; d < NUM_DATA_BITS; d++) {
+            if (parity_eqs[p][d]) {
+                bit ^= getBit(data, d);
+            }
+        }
+        parity |= (bit << p);
+    }
+
+    // P5 is the overall parity of all data bits D0-D15 XOR'd with P0-P4.
+    uint32_t p5 = 0;
+    for (int d = 0; d < NUM_DATA_BITS; d++) {
+        p5 ^= getBit(data, d);
+    }
+    for (int p = 0; p < 5; p++) {
+        p5 ^= getBit(parity, p);
+    }
+    parity |= (p5 << 5);
+
     return parity;
 }
 
@@ -34,13 +55,31 @@ struct hamming_result findHammingErrors(uint32_t encoded) {
     uint32_t regenParity = genParity(decoded.data);
 
     // TODO: Exercise 5-4, Compute the syndrome
-    uint32_t syndrome = 0;
+    // syndrome = recorded P0-P4 XOR reconstructed P0-P4 (lower 5 bits only)
+    uint32_t syndrome = (recordedParity ^ regenParity) & 0x1F;
 
     // TODO: Exercise 5-4, Compute P5 Error bit
-    uint32_t P5_Error_bit = 0;
+    // Overall parity: XOR all 22 bits of the encoded value.
+    uint32_t overall_parity = 0;
+    for (int i = 0; i < TOTAL_BITS; i++) {
+        overall_parity ^= getBit(encoded, i);
+    }
+    // P5_Error_bit is 1 if the overall parity of the 22-bit word is non-zero
+    uint32_t P5_Error_bit = overall_parity;
  
     // TODO: Exercise 5-4, Determine the error type
     _ERROR_TYPE error = NO_ERROR;
+
+    if (syndrome == 0 && P5_Error_bit == 0) {
+        error = NO_ERROR;
+    } else if (syndrome != 0 && P5_Error_bit == 1) {
+        error = SINGLE_ERROR;
+    } else if (syndrome != 0 && P5_Error_bit == 0) {
+        error = DOUBLE_ERROR;
+    } else {
+        // syndrome == 0 && P5_Error_bit == 1  →  P5 itself is flipped
+        error = PARITY_ERROR;
+    }
     
     return {error, syndrome};
 }
@@ -54,6 +93,18 @@ uint32_t verifyAndRepair(uint32_t encoded) {
 
     // TODO: Exercise 5-4, If the error type is correctable, correct it here!
     uint32_t out = encoded;
+
+    if (result.error == SINGLE_ERROR) {
+        // The syndrome holds the position (1-indexed in Hamming terms) of the
+        // bad bit within the 21-bit codeword (bits 0-20 of the encoded word).
+        // In the standard Hamming layout the syndrome directly gives the bit
+        // position (1-indexed), so the 0-indexed position is syndrome - 1.
+        uint32_t bad_bit = result.syndrome - 1;
+        out = flipBit(encoded, bad_bit);
+    } else if (result.error == PARITY_ERROR) {
+        // Only P5 (bit 21, the last bit) is wrong; flip it.
+        out = flipBit(encoded, TOTAL_BITS - 1);
+    }
 
     return out;
 }

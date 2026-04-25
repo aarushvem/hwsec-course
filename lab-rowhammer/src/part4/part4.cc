@@ -28,7 +28,48 @@ char *dram_to_str(uint64_t phys_ptr);
 uint64_t hammer_addresses(uint64_t vict, uint64_t attA, uint64_t attB, uint64_t hp_base) {
                       
     uint64_t foundFlips = 0;
-    // TODO: Exercise 4-1
+
+    uint64_t vict_row_base = vict & ~((uint64_t)(ROW_SIZE - 1));
+    uint64_t attA_row_base = attA & ~((uint64_t)(ROW_SIZE - 1));
+    uint64_t attB_row_base = attB & ~((uint64_t)(ROW_SIZE - 1));
+
+    // Write victim row (all VIC_DATA)
+    memset((void*)vict_row_base, VIC_DATA, ROW_SIZE);
+
+    // Write aggressor rows (all AGG_DATA)
+    memset((void*)attA_row_base, AGG_DATA, ROW_SIZE);
+    memset((void*)attB_row_base, AGG_DATA, ROW_SIZE);
+
+    // Flush all written cache lines so the values are actually in DRAM
+    // and the cache is clean before we start hammering.
+    for (uint64_t off = 0; off < ROW_SIZE; off += CACHELINE_SIZE) {
+        clflush((void*)(vict_row_base + off));
+        clflush((void*)(attA_row_base + off));
+        clflush((void*)(attB_row_base + off));
+    }
+    mfence();
+
+    volatile uint8_t *pA = (volatile uint8_t *)attA_row_base;
+    volatile uint8_t *pB = (volatile uint8_t *)attB_row_base;
+
+    for (uint64_t i = 0; i < HAMMERS_PER_ITER; i++) {
+        *pA;                        // access aggressor A
+        *pB;                        // access aggressor B
+        clflush((void*)pA);        // evict A from cache
+        clflush((void*)pB);        // evict B from cache
+        mfence();                   // ensure ordering
+    }
+
+    volatile uint8_t *vict_ptr = (volatile uint8_t *)vict_row_base;
+    for (uint64_t off = 0; off < ROW_SIZE; off++) {
+        uint8_t val = vict_ptr[off];
+        if (val != (uint8_t)VIC_DATA) {
+            // Count the number of flipped bits in this byte
+            uint8_t diff = val ^ (uint8_t)VIC_DATA;
+            foundFlips += __builtin_popcount(diff);
+        }
+    }
+
     return foundFlips; 
 }
 
