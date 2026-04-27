@@ -43,7 +43,7 @@ Using the reverse-engineered XOR function F0 {A14^A17, A15^A18, A16^A19, A7^A8^A
 |---|---|---|---|---|
 | Number of Flips (100 trials) | 5 | 87 | 0 | 3 |
 
-Yes, the results match expectations. The best pattern is victim=0xff, aggressor=0x00. This pattern works best because the victim row is fully charged (all 1s) while the aggressor rows are fully discharged (all 0s), creating maximum electrical contrast. This contrast causes the greatest charge disturbance on the victim row during hammering, making it easiest to leak charge and flip bits from 1 to 0. The 0x00/0x00 pattern getting 0 flips also matches expectations — when victim and aggressor have identical data there is no electrical contrast and no disturbance occurs.
+Yes, the results match expectations. The best pattern is victim=0xff, aggressor=0x00. This pattern works best because the victim row is fully charged (all 1s) while the aggressor rows are fully discharged (all 0s), creating maximum electrical contrast. This causes the greatest charge disturbance on the victim row during hammering, making it easier for charge to leak and flip bits from 1 to 0. The 0x00/0x00 pattern getting 0 flips also matches expectations. When victim and aggressor have identical data there is no electrical contrast and no disturbance occurs.
 
 ## 5-1
 
