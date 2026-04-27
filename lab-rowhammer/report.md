@@ -39,15 +39,35 @@ Using the reverse-engineered XOR function F0 {A14^A17, A15^A18, A16^A19, A7^A8^A
 
 **Do your results match your expectations? What is the best pattern to trigger flips effectively?**
 
+| Data Pattern (Victim/Aggressor) | 0x00/0xff | 0xff/0x00 | 0x00/0x00 | 0xff/0xff |
+|---|---|---|---|---|
+| Number of Flips (100 trials) | 5 | 87 | 0 | 3 |
+
+Yes, the results match expectations. The best pattern is victim=0xff, aggressor=0x00. This pattern works best because the victim row is fully charged (all 1s) while the aggressor rows are fully discharged (all 0s), creating maximum electrical contrast. This contrast causes the greatest charge disturbance on the victim row during hammering, making it easiest to leak charge and flip bits from 1 to 0. The 0x00/0x00 pattern getting 0 flips also matches expectations — when victim and aggressor have identical data there is no electrical contrast and no disturbance occurs.
+
 ## 5-1
 
 **Given the ECC type descriptions listed above, fill in the following table (assuming a data length of 4). For correction/detection, only answer "Yes" if it can always correct/detect (and "No" if there is ever a case where the scheme can fail to correct/detect). We've filled in the first line for you.**
 
+| | 1-Repetition (No ECC) | 2-Repetition | 3-Repetition | Single Parity Bit | Hamming(7,4) |
+|---|---|---|---|---|---|
+| Code Rate (Data Bits / Total Bits) | 1.0 | 4/8 = 0.5 | 4/12 = 0.33 | 4/5 = 0.8 | 4/7 = 0.57 |
+| Max Errors Can Detect | 0 | 1 | 2 | 1 | 2 |
+| Max Errors Can Correct | 0 | 0 | 1 | 0 | 1 |
+
+
 ## 5-3
 
 **When a single bit flip is detected, describe how Hamming(22,16) can correct this error.**
+When a single bit flip is detected in Hamming(22,16), the syndrome (computed by XORing the stored parity bits P0–P4 with the regenerated parity bits from the data) gives a 5-bit value that directly encodes the position of the flipped bit as a 1-indexed position within the 22-bit codeword. To correct the error, simply flip the bit at position syndrome - 1 (converting to 0-indexed) in the encoded value. This restores the original correct codeword. If the overall parity bit P5 is the one that flipped (syndrome = 0 but overall parity is wrong), then only P5 needs to be flipped to correct it.
+
 
 ## 5-5
 
 **Can the Hamming(22,16) code we implemented always protect us from rowhammer attacks? If not, describe how a clever attacker could work around this scheme.**
 
+No, Hamming(22,16) cannot always protect against Rowhammer attacks. A clever attacker can work around it in two ways:
+
+**1. Inducing double bit flips:** Hamming(22,16) can only correct single bit errors. It can detect double errors but cannot correct them. A sufficiently aggressive Rowhammer attack can cause two bits to flip within the same 22-bit protected word simultaneously. When this happens, the scheme detects the error but returns the corrupted data uncorrected, meaning the attacker successfully corrupted memory.
+
+**2. Targeted hammering:** Since Rowhammer causes predictable bit flip directions (e.g., 1→0 with the right data pattern), an attacker who knows the ECC layout can craft their hammering to flip two specific bits that produce a valid-looking codeword with a different data value, bypassing detection entirely. The ECC would see no error while the data has been silently corrupted.
